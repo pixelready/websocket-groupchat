@@ -71,6 +71,10 @@ class ChatUser {
       let newJoke = this.getJoke();
       this.send( JSON.stringify( { type: "note", text: newJoke } ) );
     }
+    if( command === 'members') {
+      let member = this.room.members;
+      this.send(JSON.stringify({type: "note", text: `In room: ${Array.from(member.values()).join(', ')}`}));
+    }
   }
 
   getJoke() {
@@ -90,14 +94,17 @@ class ChatUser {
   handleMessage( jsonData ) {
     let msg = JSON.parse( jsonData );
     console.log( msg );
-    if ( msg.text && msg.text.startsWith( "/jok" ) ) {
-      this.handleCommand( "joke" );
-    } else if ( msg.type === "join" )
+    if ( msg.type === "join" ){
       this.handleJoin( msg.name );
-    else if ( msg.type === "chat" )
+    }else if ( msg.text && msg.text.startsWith( "/jok" ) ) {
+      this.handleCommand( "joke" );
+    }else if ( msg.text && msg.text.startsWith( "/mem" ) ){
+      this.handleCommand('members');
+    }else if ( msg.type === "chat" ){
       this.handleChat( msg.text );
-    else
+    }else{
       throw new Error( `bad message: ${msg.type}` );
+    }
   }
 
   /** Connection was closed: leave room, announce exit to others. */
