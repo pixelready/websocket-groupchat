@@ -73,7 +73,8 @@ class ChatUser {
     }
     if( command === 'members') {
       let member = this.room.members;
-      this.send(JSON.stringify({type: "note", text: `In room: ${Array.from(member.values()).join(', ')}`}));
+      let names = `In room: ${Array.from(member.values()).map(m => m.name).join(', ')}`;
+      this.send(JSON.stringify({type: "note", text: names}));
     }
   }
 
